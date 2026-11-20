@@ -162,6 +162,7 @@ pub fn config_dir() -> PathBuf {
     } else {
         std::env::var_os("XDG_CONFIG_HOME").map(PathBuf::from).or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".config")))
     };
+    // The folder keeps the name "MailCraft" (AltMail's old name), so settings carry over unchanged.
     base.unwrap_or_else(|| PathBuf::from(".")).join("MailCraft")
 }
 
@@ -171,6 +172,7 @@ pub fn cache_path() -> PathBuf {
     } else {
         std::env::var_os("XDG_CACHE_HOME").map(PathBuf::from).or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".cache")))
     };
+    // "MailCraft" (AltMail's old name): the mail cache and logs stay where they were.
     let dir = base.unwrap_or_else(|| PathBuf::from(".")).join("MailCraft");
     let _ = std::fs::create_dir_all(&dir);
     dir.join("mail.db")

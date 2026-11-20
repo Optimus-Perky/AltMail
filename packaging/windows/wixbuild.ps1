@@ -3,8 +3,8 @@ $ErrorActionPreference = "Stop"
 $d = "C:\mailcraftbuild"
 Set-Location $d
 # The program must carry this version, or an upgrade would keep the old file (see build-installer.sh).
-$has = (Get-Item "$d\MailCraft.exe").VersionInfo.FileVersion
-if ($has -ne "$Version.0") { throw "MailCraft.exe is version '$has', not $Version.0: build it with MAILCRAFT_VERSION=$Version" }
+$has = (Get-Item "$d\AltMail.exe").VersionInfo.FileVersion
+if ($has -ne "$Version.0") { throw "AltMail.exe is version '$has', not $Version.0: build it with MAILCRAFT_VERSION=$Version" }
 # The installer's logo: the stamp, small.
 Add-Type -AssemblyName System.Drawing
 $src = [System.Drawing.Image]::FromFile("$d\mailcraft-256.png")
@@ -23,10 +23,10 @@ if ($LASTEXITCODE -ne 0) { throw "candle (msi) failed" }
 if ($LASTEXITCODE -ne 0) { throw "light (msi) failed" }
 & C:\wix314\candle.exe -nologo -arch x64 "-dVersion=$Version" "-dBuildDir=$d" -ext WixBalExtension -ext WixUtilExtension -out bundle.wixobj bundle.wxs
 if ($LASTEXITCODE -ne 0) { throw "candle (bundle) failed" }
-& C:\wix314\light.exe -nologo -ext WixBalExtension -ext WixUtilExtension -out MailCraft-setup.exe bundle.wixobj
+& C:\wix314\light.exe -nologo -ext WixBalExtension -ext WixUtilExtension -out AltMail-setup.exe bundle.wixobj
 if ($LASTEXITCODE -ne 0) { throw "light (bundle) failed" }
 # The program and the installer have the same name; the installer goes out under it.
-Move-Item -Force MailCraft.exe MailCraft-program.exe
-Move-Item -Force MailCraft-setup.exe MailCraft.exe
-$v = (Get-Item "$d\MailCraft.exe").VersionInfo
-"  built MailCraft.exe (installer) {0:N0} bytes, file version {1}, product {2}" -f (Get-Item "$d\MailCraft.exe").Length, $v.FileVersion, $v.ProductName
+Move-Item -Force AltMail.exe AltMail-program.exe
+Move-Item -Force AltMail-setup.exe AltMail.exe
+$v = (Get-Item "$d\AltMail.exe").VersionInfo
+"  built AltMail.exe (installer) {0:N0} bytes, file version {1}, product {2}" -f (Get-Item "$d\AltMail.exe").Length, $v.FileVersion, $v.ProductName

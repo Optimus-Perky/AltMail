@@ -682,13 +682,13 @@ impl MailApp {
                 ui.horizontal(|ui| {
                     if ui
                         .add_enabled(i > 0, egui::Button::new("Set as default"))
-                        .on_hover_text("Opened when MailCraft starts; first in the folder list")
+                        .on_hover_text("Opened when AltMail starts; first in the folder list")
                         .clicked()
                     {
                         self.set_default_account(i);
                     }
                     let delete = egui::Button::new(RichText::new("Delete").color(Color32::WHITE)).fill(Color32::from_rgb(0xD9, 0x3D, 0x3D));
-                    if ui.add(delete).on_hover_text("Remove the account from MailCraft (the mail stays on the server)").clicked() {
+                    if ui.add(delete).on_hover_text("Remove the account from AltMail (the mail stays on the server)").clicked() {
                         self.dialog = Some(Dialog::RemoveAccount(i));
                     }
                     if i == 0 {
@@ -859,7 +859,7 @@ impl MailApp {
                 ui.add_space(6.0);
                 note(
                     ui,
-                    "MailCraft sends these itself, so only while it is open. Each sender gets one reply; mailing lists, newsletters and other automatic mail never get one.",
+                    "AltMail sends these itself, so only while it is open. Each sender gets one reply; mailing lists, newsletters and other automatic mail never get one.",
                 );
             }
             Page::Signatures => {
@@ -980,7 +980,7 @@ impl MailApp {
                 let s = &mut self.settings;
                 heading(ui, "Language");
                 ui.label("English (United Kingdom)");
-                note(ui, "MailCraft is in UK English for now.");
+                note(ui, "AltMail is in UK English for now.");
                 heading(ui, "Date format");
                 ui.radio_value(&mut s.date_style, DateStyle::DayMonth, "01/09/2027 (day first)");
                 ui.radio_value(&mut s.date_style, DateStyle::MonthDay, "09/01/2027 (month first)");
@@ -991,7 +991,7 @@ impl MailApp {
                 heading(ui, "Time zone");
                 let now = chrono::Local::now();
                 ui.label(format!("UTC{} (now {})", now.format("%:z"), now.format("%H:%M")));
-                note(ui, "MailCraft uses the time zone Windows is set to.");
+                note(ui, "AltMail uses the time zone Windows is set to.");
             }
             Page::Appearance => {
                 heading(ui, "Theme");
@@ -1017,8 +1017,8 @@ impl MailApp {
                 let s = &mut self.settings;
                 egui::Frame::group(ui.style()).fill(t.panel).stroke(Stroke::new(1.0, t.border)).corner_radius(6.0).show(ui, |ui| {
                     ui.set_width(ui.available_width());
-                    ui.checkbox(&mut s.notifications, RichText::new("Notifications in MailCraft").font(semibold(13.5)));
-                    note(ui, "Tell me about new mail and other things happening in MailCraft.");
+                    ui.checkbox(&mut s.notifications, RichText::new("Notifications in AltMail").font(semibold(13.5)));
+                    note(ui, "Tell me about new mail and other things happening in AltMail.");
                 });
                 heading(ui, "Notify me about");
                 ui.add_enabled_ui(s.notifications, |ui| {
@@ -1032,18 +1032,18 @@ impl MailApp {
                         );
                         note(ui, "Leave a folder out with \"Notify about new mail here\" in its right-click menu.");
                         ui.add_space(4.0);
-                        ui.checkbox(&mut s.notify_card, "Show a card at the bottom right of the screen, even when MailCraft is minimised");
+                        ui.checkbox(&mut s.notify_card, "Show a card at the bottom right of the screen, even when AltMail is minimised");
                         note(ui, "As Betterbird's: who it is from, the subject and the start of the message. Click it to read the message.");
                         ui.add_enabled_ui(!s.notify_card, |ui| {
-                            ui.checkbox(&mut s.notify_banner, "Otherwise, a banner inside MailCraft (bottom left)");
+                            ui.checkbox(&mut s.notify_banner, "Otherwise, a banner inside AltMail (bottom left)");
                         });
-                        ui.checkbox(&mut s.alert_new_mail, "Flash MailCraft in the taskbar when it is behind other windows");
+                        ui.checkbox(&mut s.alert_new_mail, "Flash AltMail in the taskbar when it is behind other windows");
                         ui.add_enabled_ui(s.focused_inbox, |ui| {
                             ui.checkbox(&mut s.notify_focused_only, "Only for mail that goes to Focused");
                         });
                     });
                 });
-                note(ui, "MailCraft never plays a sound.");
+                note(ui, "AltMail never plays a sound.");
             }
             Page::Accessibility => {
                 let s = &mut self.settings;
@@ -1082,7 +1082,7 @@ impl MailApp {
                 heading(ui, "Suggested people");
                 note(
                     ui,
-                    "As you type a name in To, Cc or Bcc, MailCraft suggests people you've emailed or who have emailed you (not newsletters or Junk). It works from the mail on this PC; nothing is sent anywhere.",
+                    "As you type a name in To, Cc or Bcc, AltMail suggests people you've emailed or who have emailed you (not newsletters or Junk). It works from the mail on this PC; nothing is sent anywhere.",
                 );
                 ui.checkbox(&mut s.suggest_people, "Suggest people as I type");
                 ui.add_space(2.0);
@@ -1113,7 +1113,7 @@ impl MailApp {
                     }
                 }
                 heading(ui, "Search history");
-                note(ui, "MailCraft keeps your last 20 searches to offer them again under the search box. They stay on this PC.");
+                note(ui, "AltMail keeps your last 20 searches to offer them again under the search box. They stay on this PC.");
                 ui.horizontal(|ui| {
                     if ui.add_enabled(!s.search_history.is_empty(), egui::Button::new("Delete history")).clicked() {
                         s.search_history.clear();
@@ -1359,7 +1359,7 @@ impl MailApp {
                 ui.radio_value(&mut s.after_delete, AfterDelete::ReturnToList, "Return to the list");
                 heading(ui, "Deleting");
                 ui.checkbox(&mut s.read_on_delete, "Mark messages as read when they are deleted");
-                ui.checkbox(&mut s.empty_trash_on_exit, "Empty Trash when MailCraft closes");
+                ui.checkbox(&mut s.empty_trash_on_exit, "Empty Trash when AltMail closes");
                 heading(ui, "Read receipts");
                 note(ui, "When a message asks for one:");
                 ui.radio_value(&mut s.receipts, Receipts::Ask, "Ask me");

@@ -1,9 +1,10 @@
-# MailCraft
+# AltMail
 
-An Outlook-style mail client for Windows (and Linux), written in Rust. Every message is cached on
+An Outlook-style mail client for Windows (and Linux), written in Rust. (It was called MailCraft
+until November 2026; an AltMail install upgrades a MailCraft one and keeps its accounts and mail.) Every message is cached on
 your PC, so moving, deleting and searching happen at once and the server catches up behind you.
 
-Downloads, with checksums: **<https://altcraft.perkin.me.uk/mailcraft/>**
+Downloads, with checksums: **<https://altcraft.perkin.me.uk/altmail/>**
 
 ## What it does
 
@@ -11,7 +12,7 @@ Downloads, with checksums: **<https://altcraft.perkin.me.uk/mailcraft/>**
   (provider autoconfig, `.well-known`, then the Mozilla ISPDB).
 - Gmail and Outlook.com sign-in (OAuth, in your own browser). The downloads have Google sign-in
   built in; Outlook.com, and builds from source, use an app registration of your own, entered in
-  MailCraft.
+  AltMail.
 - Folders, a three-pane layout, conversations, a reading pane for HTML mail (in the system's own
   browser engine, locked down, with remote pictures blocked until you ask), compose, reply and
   forward with attachments, drafts, rules, categories, search.
@@ -20,14 +21,14 @@ Downloads, with checksums: **<https://altcraft.perkin.me.uk/mailcraft/>**
 
 ## Built on WordCraft
 
-MailCraft's message view and editor are [ArtCraft](https://getartcraft.com/apps)'s **WordCraft**
+AltMail's message view and editor are [ArtCraft](https://getartcraft.com/apps)'s **WordCraft**
 engine: the document model, layout, rendering and HTML import/export from
 [github.com/storytold/wordcraft](https://github.com/storytold/wordcraft), which the ArtCraft team
-publish under MIT or Apache-2.0. MailCraft would have taken years longer without it: thank you.
+publish under MIT or Apache-2.0. AltMail would have taken years longer without it: thank you.
 
-This repository keeps WordCraft's crates and apps alongside MailCraft's own (`apps/mailcraft`,
+This repository keeps WordCraft's crates and apps alongside AltMail's own (`apps/mailcraft`,
 `apps/mailcraft-cli`, `crates/mail-*`); WordCraft's own README is in
-[its repository](https://github.com/storytold/wordcraft). MailCraft is based on WordCraft by the
+[its repository](https://github.com/storytold/wordcraft). AltMail is based on WordCraft by the
 ArtCraft team, and is not made, sponsored or endorsed by them.
 
 ## Build
@@ -41,12 +42,12 @@ cargo test --workspace
 ```
 
 Windows builds cross-compile with the `x86_64-pc-windows-gnu` target; the installer
-(`packaging/windows/`) is a WiX bundle. On Windows MailCraft needs Microsoft Edge WebView2, which
+(`packaging/windows/`) is a WiX bundle. On Windows AltMail needs Microsoft Edge WebView2, which
 Windows 10 and 11 already have.
 
 No app registrations are in this repository. To build one in, set `MAILCRAFT_OAUTH_FILE` to an
 `oauth.json` (`{"google": {"client_id": "...", "client_secret": "..."}}`) kept outside the tree;
-without it, MailCraft asks for the person's own registration when they first sign in.
+without it, AltMail asks for the person's own registration when they first sign in.
 
 ## Licence
 

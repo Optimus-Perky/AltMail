@@ -340,7 +340,7 @@ fn groups(tab: Tab, quick: &[String]) -> Vec<Group> {
             "Help",
             vec![
                 Big(Shortcuts, "Keyboard\nshortcuts", Icon::Keyboard),
-                Big(About, "About\nMailCraft", Icon::About),
+                Big(About, "About\nAltMail", Icon::About),
                 Big(OpenLogs, "Log\nfolder", Icon::LogFolder),
             ],
         )],

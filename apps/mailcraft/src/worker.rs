@@ -827,7 +827,7 @@ async fn credential(acct: &Account, secret: &str) -> Result<Credential, String> 
     {
         return Ok(Credential::Token(t));
     }
-    let client = crate::accounts::oauth_client(p).ok_or_else(|| format!("{SIGN_IN_AGAIN}MailCraft has no {} app registration", p.name()))?;
+    let client = crate::accounts::oauth_client(p).ok_or_else(|| format!("{SIGN_IN_AGAIN}AltMail has no {} app registration", p.name()))?;
     // The saved token, not the copy this request carried: an earlier step may have rotated it.
     let refresh = crate::secrets::get(&acct.email).unwrap_or_else(|| secret.to_string());
     let refresh_used = refresh.clone();
@@ -922,7 +922,7 @@ fn kept_key(acct: &Account) -> String {
 /// The browser sign-in. On success the refresh token is in the keyring and an access token in hand.
 fn sign_in(acct: &Account) -> Result<Option<String>, String> {
     let p = acct.oauth.ok_or("this account signs in with a password")?;
-    let client = crate::accounts::oauth_client(p).ok_or_else(|| format!("MailCraft has no {} app registration yet", p.name()))?;
+    let client = crate::accounts::oauth_client(p).ok_or_else(|| format!("AltMail has no {} app registration yet", p.name()))?;
     let t = oauth::sign_in(p, &client, &acct.email, open_browser).map_err(|e| e.to_string())?;
     keep(acct, p, &t, "");
     Ok(t.email)

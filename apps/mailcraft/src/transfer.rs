@@ -83,7 +83,7 @@ fn seal(plain: &[u8], passphrase: &str, iterations: u32) -> Result<Sealed, Strin
 
 fn open(s: &Sealed, passphrase: &str) -> Result<Vec<u8>, String> {
     if s.kdf != "pbkdf2-sha256" {
-        return Err(format!("the file is locked in a way this MailCraft does not know ({})", s.kdf));
+        return Err(format!("the file is locked in a way this AltMail does not know ({})", s.kdf));
     }
     let bad = || "the file is damaged".to_string();
     let salt = B64.decode(&s.salt).map_err(|_| bad())?;
@@ -154,14 +154,14 @@ fn unlock(l: &Locked, password: &str) -> Result<Bundle, String> {
 pub fn read(path: &Path) -> Result<Locked, String> {
     let bytes = std::fs::read(path).map_err(|e| format!("could not read {}: {e}", path.display()))?;
     if bytes.len() > 32 << 20 {
-        return Err("that file is too big to be MailCraft settings".into());
+        return Err("that file is too big to be AltMail settings".into());
     }
-    let b: Locked = serde_json::from_slice(&bytes).map_err(|_| "that is not a MailCraft settings file".to_string())?;
+    let b: Locked = serde_json::from_slice(&bytes).map_err(|_| "that is not a AltMail settings file".to_string())?;
     if b.format != FORMAT {
-        return Err("that is not a MailCraft settings file".into());
+        return Err("that is not a AltMail settings file".into());
     }
     if b.version > 2 {
-        return Err("that file comes from a newer MailCraft: update this one first".into());
+        return Err("that file comes from a newer AltMail: update this one first".into());
     }
     Ok(b)
 }
@@ -268,7 +268,7 @@ impl MailApp {
 
     pub(crate) fn import_settings(&mut self) {
         let Some(path) = test_file()
-            .or_else(|| rfd::FileDialog::new().set_title("Import MailCraft settings").add_filter("MailCraft settings", &["mcsettings"]).pick_file())
+            .or_else(|| rfd::FileDialog::new().set_title("Import AltMail settings").add_filter("AltMail settings", &["mcsettings"]).pick_file())
         else {
             return;
         };
@@ -306,7 +306,7 @@ impl MailApp {
             if let Some(done) = &f.done {
                 ui.add(egui::Label::new(RichText::new(done).color(t.text)).wrap());
                 ui.add_space(6.0);
-                let label = if f.restart { "Restart MailCraft" } else { "Close" };
+                let label = if f.restart { "Restart AltMail" } else { "Close" };
                 let b = egui::Button::new(RichText::new(label).color(Color32::WHITE)).fill(t.accent).min_size(vec2(90.0, 28.0));
                 if ui.add(b).clicked() || ui.input(|i| i.key_pressed(egui::Key::Enter)) {
                     go = true;
@@ -340,7 +340,7 @@ impl MailApp {
                     ui,
                     "One file with your accounts, saved passwords and sign-ins, settings, signatures, rules, categories, send-only addresses, calendar accounts and layout, to import on your other PC. The mail itself is not in it: the other PC fetches it.",
                 );
-                note(ui, "The whole file is locked with this password (at least 8 characters). MailCraft cannot recover it if it is forgotten.");
+                note(ui, "The whole file is locked with this password (at least 8 characters). AltMail cannot recover it if it is forgotten.");
                 enter |= field(ui, "Password", &mut f.pass, "tr_p1");
                 enter |= field(ui, "Again", &mut f.pass2, "tr_p2");
                 if !f.pass2.is_empty() && f.pass != f.pass2 {
@@ -396,7 +396,7 @@ impl MailApp {
                             f.error = None;
                             f.restart = true;
                             f.done = Some(format!(
-                                "Imported. MailCraft starts again to use the new settings.\n\nWhat was here before is in {}",
+                                "Imported. AltMail starts again to use the new settings.\n\nWhat was here before is in {}",
                                 backup.display()
                             ));
                         }
@@ -406,12 +406,12 @@ impl MailApp {
                 }
                 f.pass.clear();
             } else {
-                let name = format!("MailCraft settings ({} {}).mcsettings", this_pc(), chrono::Local::now().format("%Y-%m-%d"));
+                let name = format!("AltMail settings ({} {}).mcsettings", this_pc(), chrono::Local::now().format("%Y-%m-%d"));
                 if let Some(path) = test_file().or_else(|| {
                     rfd::FileDialog::new()
-                        .set_title("Export MailCraft settings")
+                        .set_title("Export AltMail settings")
                         .set_file_name(&name)
-                        .add_filter("MailCraft settings", &["mcsettings"])
+                        .add_filter("AltMail settings", &["mcsettings"])
                         .save_file()
                 }) {
                     let b = gather(&dir);

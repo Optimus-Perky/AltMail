@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 publish = false
-description = "MailCraft: find an email account's IMAP and SMTP settings from its address"
+description = "AltMail: find an email account's IMAP and SMTP settings from its address"
 
 [lints]
 workspace = true

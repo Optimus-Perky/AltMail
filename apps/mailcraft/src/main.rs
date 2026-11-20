@@ -2745,7 +2745,7 @@ impl MailApp {
         let at = pos2((screen.x - size.x - 16.0).max(0.0), (screen.y - size.y - 60.0).max(0.0));
         let fade = (age / CARD_FADE).min(1.0).min((CARD_SECS - age) / CARD_FADE).clamp(0.0, 1.0);
         let builder = egui::ViewportBuilder::default()
-            .with_title("MailCraft: new mail")
+            .with_title("AltMail: new mail")
             .with_decorations(false)
             .with_resizable(false)
             .with_always_on_top()
@@ -2887,7 +2887,7 @@ impl MailApp {
 
     /// Save the search history as a text file, one search a line (Settings > Privacy and data).
     fn export_search_history(&mut self) {
-        let Some(path) = rfd::FileDialog::new().set_file_name("MailCraft search history.txt").add_filter("Text", &["txt"]).save_file() else {
+        let Some(path) = rfd::FileDialog::new().set_file_name("AltMail search history.txt").add_filter("Text", &["txt"]).save_file() else {
             return;
         };
         let text = self.settings.search_history.join("\r\n");
@@ -3526,7 +3526,7 @@ impl MailApp {
         self.folders.clear();
         self.messages.clear();
         self.refresh_folders();
-        self.status = format!("{} removed from MailCraft (the mail is still on the server).", acct.email);
+        self.status = format!("{} removed from AltMail (the mail is still on the server).", acct.email);
     }
 
     /// Is this the account's Drafts folder? (Marked \\Drafts, or named like it when nothing is marked.)
@@ -3590,19 +3590,7 @@ impl MailApp {
         } else {
             htmlview::from_text(&m.body_text(0).unwrap_or_default())
         };
-        let inline: Vec<htmlview::Inline> = m
-            .parts
-            .iter()
-            .filter_map(|p| {
-                let cid = p.content_id()?.to_string();
-                let ct = p.content_type()?;
-                Some(htmlview::Inline {
-                    cid,
-                    mime: format!("{}/{}", ct.ctype(), ct.subtype().unwrap_or("octet-stream")),
-                    bytes: p.contents().to_vec(),
-                })
-            })
-            .collect();
+        let inline = htmlview::inline_parts(&m);
         let remote = htmlview::has_remote_images(&html);
         // Pictures from the internet: Settings > Reading pane (always, safe senders, or ask).
         let sender = m.from().and_then(|a| a.first()).and_then(|a| a.address()).unwrap_or("").to_string();
@@ -4075,7 +4063,7 @@ impl MailApp {
             ui,
             |ui| {
                 ui.horizontal_centered(|ui| {
-                    ui.label(RichText::new("MailCraft").font(semibold(14.0)).color(t.text));
+                    ui.label(RichText::new("AltMail").font(semibold(14.0)).color(t.text));
                     ui.label(
                         RichText::new(format!("  {}", self.current().map(|a| a.email.as_str()).unwrap_or(""))).font(regular(12.0)).color(t.text_dim),
                     );
@@ -4174,7 +4162,7 @@ impl MailApp {
     fn add_popout(&mut self, msg: OpenMessage, at: Option<egui::Pos2>) {
         self.pop_seq += 1;
         // Each window's title must be its own (the browser view finds its window by it).
-        let base = format!("{} - MailCraft", msg.subject.trim());
+        let base = format!("{} - AltMail", msg.subject.trim());
         let mut title = base.clone();
         let mut n = 2;
         while self.popouts.iter().any(|p| p.title == title) {
@@ -4246,7 +4234,7 @@ impl MailApp {
                                 }
                             }
                             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                                if ui.button("Back to MailCraft").on_hover_text("Put it back in a tab of the main window").clicked() {
+                                if ui.button("Back to AltMail").on_hover_text("Put it back in a tab of the main window").clicked() {
                                     acts.push((id, PopAct::Dock));
                                 }
                             });
@@ -4313,7 +4301,7 @@ impl MailApp {
                             let r = ui.available_rect_before_wrap();
                             ui.allocate_rect(r, Sense::hover());
                             let ppp = ui.ctx().pixels_per_point();
-                            w.show(&open.prepared, r.min.x * ppp, r.min.y * ppp, r.width() * ppp, r.height() * ppp);
+                            w.show(&open.prepared, &open.inline, r.min.x * ppp, r.min.y * ppp, r.width() * ppp, r.height() * ppp);
                             return;
                         }
                     }
@@ -6299,7 +6287,7 @@ impl MailApp {
                 // While a dialog is up the view stays hidden, or it would sit on top of the dialog.
                 if !covered {
                     let ppp = ui.ctx().pixels_per_point();
-                    w.show(&open.prepared, r.min.x * ppp, r.min.y * ppp, r.width() * ppp, r.height() * ppp);
+                    w.show(&open.prepared, &open.inline, r.min.x * ppp, r.min.y * ppp, r.width() * ppp, r.height() * ppp);
                 }
                 return;
             }
@@ -7319,7 +7307,7 @@ impl MailApp {
             Dialog::Categorise | Dialog::Categories(_) => "Categories",
             Dialog::Conversations { .. } => "Conversations",
             Dialog::Sweep { .. } => "Sweep",
-            Dialog::About => "About MailCraft",
+            Dialog::About => "About AltMail",
             Dialog::Shortcuts => "Keyboard shortcuts",
         };
         let kinds: Vec<(String, foldertree::Kind)> = self.folders.iter().map(|f| (f.name.clone(), foldertree::kind(f))).collect();
@@ -7429,8 +7417,8 @@ impl MailApp {
             }
             Dialog::RemoveAccount(i) => {
                 let name = account_names.get(*i).cloned().unwrap_or_default();
-                ui.label(format!("Remove {name} from MailCraft?"));
-                ui.label("The mail stays on the server. MailCraft forgets the account, its saved sign-in and its copy of the mail.");
+                ui.label(format!("Remove {name} from AltMail?"));
+                ui.label("The mail stays on the server. AltMail forgets the account, its saved sign-in and its copy of the mail.");
                 ui.horizontal(|ui| {
                     if ui.button(RichText::new("Remove account").color(red)).clicked() {
                         remove = Some(*i);
@@ -7461,7 +7449,7 @@ impl MailApp {
             Dialog::Conversations { .. } => {}
             Dialog::Sweep { .. } => {}
             Dialog::About => {
-                ui.label(RichText::new(format!("MailCraft {}", env!("CARGO_PKG_VERSION"))).font(semibold(16.0)));
+                ui.label(RichText::new(format!("AltMail {}", env!("CARGO_PKG_VERSION"))).font(semibold(16.0)));
                 ui.label("Email for any account: IMAP and SMTP, Gmail and Outlook.");
                 ui.label("Written with WordCraft's engine. Open source, MIT or Apache-2.0.");
                 if ui.button("Close").clicked() {
@@ -7828,7 +7816,7 @@ fn registration_and_button(ui: &mut egui::Ui, p: Provider, id: &mut String, secr
         }
     };
     if !own && !builtin {
-        ui.label(format!("First, MailCraft needs your own {} app registration (once only).", p.name()));
+        ui.label(format!("First, AltMail needs your own {} app registration (once only).", p.name()));
         ui.label(
             RichText::new(format!("Create one in {}'s developer console as a desktop app, then paste its details here.", p.name()))
                 .font(regular(12.0)),
@@ -7838,7 +7826,7 @@ fn registration_and_button(ui: &mut egui::Ui, p: Provider, id: &mut String, secr
         egui::CollapsingHeader::new(RichText::new(format!("Use my own {} app registration", p.name())).font(regular(12.0)))
             .id_salt(("own-registration", p.name()))
             .show(ui, |ui| {
-                ui.label(RichText::new("Optional. Leave empty to use MailCraft's.").font(regular(12.0)));
+                ui.label(RichText::new("Optional. Leave empty to use AltMail's.").font(regular(12.0)));
                 fields(ui, id, secret);
             });
     }
@@ -8445,12 +8433,12 @@ impl MailApp {
         app.drag_copy = egui::DragAndDrop::has_any_payload(ctx) && ctx.input(|i| i.modifiers.command);
         let title = match (&app.open, app.current()) {
             _ if app.compose.is_some() => format!(
-                "{} - MailCraft",
+                "{} - AltMail",
                 app.compose.as_ref().map(|c| if c.subject.is_empty() { c.kind.to_string() } else { c.subject.clone() }).unwrap_or_default()
             ),
-            (Some(o), _) => format!("{} - MailCraft", o.subject),
-            (None, Some(a)) => format!("{} - MailCraft", a.email),
-            _ => "MailCraft".into(),
+            (Some(o), _) => format!("{} - AltMail", o.subject),
+            (None, Some(a)) => format!("{} - AltMail", a.email),
+            _ => "AltMail".into(),
         };
         // Only when it changes: each title sent makes Windows redraw the taskbar button, and
         // sending it every frame kept Explorer (and so the taskbar) busy.
@@ -8486,7 +8474,7 @@ impl MailApp {
 
 fn main() -> eframe::Result {
     if std::env::args().nth(1).as_deref() == Some("--version") {
-        println!("MailCraft {}", option_env!("MAILCRAFT_VERSION").filter(|v| !v.is_empty()).unwrap_or(env!("CARGO_PKG_VERSION")));
+        println!("AltMail {}", option_env!("MAILCRAFT_VERSION").filter(|v| !v.is_empty()).unwrap_or(env!("CARGO_PKG_VERSION")));
         return Ok(());
     }
     // One window: an email link clicked elsewhere, or MailCraft started again from its icon,
@@ -8496,7 +8484,7 @@ fn main() -> eframe::Result {
     if first.as_deref() == Some("--test-notification") {
         let card = Card {
             heading: "New mail \u{00b7} test".into(),
-            title: "MailCraft".into(),
+            title: "AltMail".into(),
             lines: vec!["A test notification".into(), "If you can read this, new-mail notifications work.".into()],
             open: None,
             day: None,
@@ -8512,14 +8500,14 @@ fn main() -> eframe::Result {
     }
     logfile::init();
     log::info!(
-        "MailCraft {} started{}",
+        "AltMail {} started{}",
         option_env!("MAILCRAFT_VERSION").filter(|v| !v.is_empty()).unwrap_or(env!("CARGO_PKG_VERSION")),
         if single { "" } else { " (another window)" }
     );
     // Open where it was closed.
     let v: View = accounts::read_settings("view.json").unwrap_or_default();
     let mut viewport = egui::ViewportBuilder::default()
-        .with_title("MailCraft")
+        .with_title("AltMail")
         .with_app_id("uk.perkin.mailcraft")
         .with_inner_size([1400.0, 880.0])
         .with_min_inner_size([900.0, 520.0])
@@ -8532,7 +8520,7 @@ fn main() -> eframe::Result {
         viewport = viewport.with_icon(icon);
     }
     let options = eframe::NativeOptions { viewport, ..Default::default() };
-    eframe::run_native("MailCraft", options, Box::new(move |cc| Ok(Box::new(App(MailApp::new(&cc.egui_ctx, link, single))))))
+    eframe::run_native("AltMail", options, Box::new(move |cc| Ok(Box::new(App(MailApp::new(&cc.egui_ctx, link, single))))))
 }
 
 /// Subject, from, to and date above a message: selectable, copyable (Ctrl+C or right-click).

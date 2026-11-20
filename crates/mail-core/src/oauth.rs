@@ -179,7 +179,7 @@ pub fn sign_in_for(
     open_browser: impl FnOnce(&str) -> Result<(), String>,
 ) -> Result<Tokens, Error> {
     if !c.is_complete(p) {
-        return Err(Error::OAuth(format!("MailCraft has no {} app registration yet", p.name())));
+        return Err(Error::OAuth(format!("AltMail has no {} app registration yet", p.name())));
     }
     let listener = TcpListener::bind("127.0.0.1:0")?;
     let port = listener.local_addr()?.port();
@@ -222,7 +222,7 @@ pub fn sign_in_for(
     }
     let t = token_request(&p.token_url(c), &form_fields)?;
     if t.refresh_token.is_none() {
-        return Err(Error::OAuth(format!("{} signed you in but gave no refresh token, so MailCraft could not stay signed in", p.name())));
+        return Err(Error::OAuth(format!("{} signed you in but gave no refresh token, so AltMail could not stay signed in", p.name())));
     }
     Ok(t)
 }
@@ -308,7 +308,7 @@ fn query(path: &str) -> Vec<(String, String)> {
         .collect()
 }
 
-const DONE_PAGE: &str = "<!doctype html><meta charset=utf-8><title>MailCraft</title><body style=\"font:16px system-ui,sans-serif;margin:60px auto;max-width:520px;color:#222\"><h2>Signed in</h2><p>You can close this tab and go back to MailCraft.</p>";
+const DONE_PAGE: &str = "<!doctype html><meta charset=utf-8><title>AltMail</title><body style=\"font:16px system-ui,sans-serif;margin:60px auto;max-width:520px;color:#222\"><h2>Signed in</h2><p>You can close this tab and go back to AltMail.</p>";
 
 fn reply(s: &mut TcpStream, status: &str, body: &str) {
     let _ = write!(
@@ -322,7 +322,7 @@ fn reply(s: &mut TcpStream, status: &str, body: &str) {
 fn page(title: &str, msg: &str) -> String {
     let esc = |s: &str| s.replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;");
     format!(
-        "<!doctype html><meta charset=utf-8><title>MailCraft</title><body style=\"font:16px system-ui,sans-serif;margin:60px auto;max-width:520px;color:#222\"><h2>{}</h2><p>{}</p>",
+        "<!doctype html><meta charset=utf-8><title>AltMail</title><body style=\"font:16px system-ui,sans-serif;margin:60px auto;max-width:520px;color:#222\"><h2>{}</h2><p>{}</p>",
         esc(title),
         esc(msg)
     )

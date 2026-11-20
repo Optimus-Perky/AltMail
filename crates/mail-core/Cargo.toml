@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 publish = false
-description = "MailCraft: IMAP connection, folder and message sync, and the local mail cache"
+description = "AltMail: IMAP connection, folder and message sync, and the local mail cache"
 
 [lints]
 workspace = true

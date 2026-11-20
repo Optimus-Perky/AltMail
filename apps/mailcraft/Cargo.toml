@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 publish = false
-description = "MailCraft: an Outlook-style mail client built on WordCraft's document engine"
+description = "AltMail: an Outlook-style mail client built on WordCraft's document engine"
 
 [[bin]]
 name = "mailcraft"
@@ -46,6 +46,10 @@ wry = { version = "0.57", default-features = false, features = ["os-webview", "x
 
 [target.'cfg(target_os = "linux")'.dependencies]
 gtk = "0.18"
+
+# The ignored live test of the message view (htmlview.rs) opens a window of its own.
+[target.'cfg(any(windows, target_os = "linux"))'.dev-dependencies]
+winit = { version = "0.30", default-features = false, features = ["rwh_06", "x11"] }
 
 [target.'cfg(windows)'.dependencies]
 windows-registry = "0.6"

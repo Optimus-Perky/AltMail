@@ -3110,6 +3110,7 @@ dependencies = [
  "tokio",
  "ureq",
  "windows-registry",
+ "winit",
  "winresource",
  "wordcraft-doc",
  "wordcraft-engine",

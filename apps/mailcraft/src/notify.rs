@@ -16,6 +16,7 @@ pub struct Clicked {
 
 /// The identity Windows shows the notifications under (registered in `register`).
 #[cfg(windows)]
+// Windows knows the app by this id: it keeps AltMail's old name; the name shown is DisplayName below.
 const APP_ID: &str = "uk.perkin.MailCraft";
 
 /// Show the card as a Windows notification. False when that is not possible here (not
@@ -53,7 +54,7 @@ fn register() {
         let icon = crate::accounts::cache_path().with_file_name("notification-icon.png");
         let _ = std::fs::write(&icon, include_bytes!("../../../assets/app-icon/mailcraft-256.png"));
         if let Ok(key) = windows_registry::CURRENT_USER.create(format!("Software\\Classes\\AppUserModelId\\{APP_ID}")) {
-            let _ = key.set_string("DisplayName", "MailCraft");
+            let _ = key.set_string("DisplayName", "AltMail");
             let _ = key.set_string("IconUri", icon.to_string_lossy().as_ref());
         }
     });

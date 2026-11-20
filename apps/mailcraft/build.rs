@@ -31,13 +31,13 @@ fn main() {
     let dotted = parts.iter().map(u64::to_string).collect::<Vec<_>>().join(".");
     let mut res = winresource::WindowsResource::new();
     res.set_icon("../../assets/app-icon/mailcraft.ico")
-        .set("ProductName", "MailCraft")
-        .set("FileDescription", "MailCraft")
+        .set("ProductName", "AltMail")
+        .set("FileDescription", "AltMail")
         .set("FileVersion", &dotted)
         .set("ProductVersion", &version)
-        .set("LegalCopyright", "Copyright (c) the MailCraft authors. MIT OR Apache-2.0.")
-        .set("OriginalFilename", "MailCraft.exe")
-        .set("InternalName", "MailCraft")
+        .set("LegalCopyright", "Copyright (c) the AltMail authors. MIT OR Apache-2.0.")
+        .set("OriginalFilename", "AltMail.exe")
+        .set("InternalName", "AltMail")
         .set_version_info(winresource::VersionInfo::FILEVERSION, packed)
         .set_version_info(winresource::VersionInfo::PRODUCTVERSION, packed);
     if let Err(e) = res.compile() {

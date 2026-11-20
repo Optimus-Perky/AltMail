@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 publish = false
-description = "MailCraft: find one of its own windows by title and lend its native handle (FFI, so its own crate)"
+description = "AltMail: find one of its own windows by title and lend its native handle (FFI, so its own crate)"
 
 # The workspace forbids unsafe code; finding a window needs the operating system's own calls,
 # so this one small crate allows it (and nothing else does).

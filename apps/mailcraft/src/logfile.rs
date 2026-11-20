@@ -107,7 +107,7 @@ pub fn init() {
     }
     let prev = std::panic::take_hook();
     std::panic::set_hook(Box::new(move |info| {
-        log::error!("MailCraft stopped: {info}");
+        log::error!("AltMail stopped: {info}");
         log::logger().flush();
         prev(info);
     }));

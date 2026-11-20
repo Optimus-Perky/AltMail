@@ -146,7 +146,7 @@ impl CalSource {
             return Ok(t);
         }
         let p = self.provider().ok_or("this calendar account signs in with a password")?;
-        let client = crate::accounts::oauth_client(p).ok_or_else(|| format!("MailCraft has no {} app registration", p.name()))?;
+        let client = crate::accounts::oauth_client(p).ok_or_else(|| format!("AltMail has no {} app registration", p.name()))?;
         // The saved token, not the copy this request carried: a refresh may have rotated it.
         let refresh = crate::secrets::get(&self.secret_name()).unwrap_or_else(|| refresh.to_string());
         match oauth::refresh_for(p, &client, &refresh, Purpose::Calendar) {
@@ -187,7 +187,7 @@ impl CalSource {
 pub fn sign_in(src: &CalSource) -> Result<String, String> {
     let p = src.provider().ok_or("this calendar account signs in with a password")?;
     let client = crate::accounts::oauth_client(p)
-        .ok_or_else(|| format!("MailCraft has no {} app registration yet (Settings > Accounts, Sign in with {0})", p.name()))?;
+        .ok_or_else(|| format!("AltMail has no {} app registration yet (Settings > Accounts, Sign in with {0})", p.name()))?;
     let t = oauth::sign_in_for(p, &client, src.username.trim(), Purpose::Calendar, crate::worker::open_browser).map_err(|e| e.to_string())?;
     src.keep(&t, "");
     if let Some(r) = t.refresh_token.as_deref() {
@@ -2332,9 +2332,7 @@ impl MailApp {
                                 "Signs in with Google; Google asks you to allow access to your calendars."
                             }
                             Provider::Google => "Uses your own Google app registration; its Google Cloud project needs the CalDAV API turned on.",
-                            Provider::Microsoft => {
-                                "Uses MailCraft's Microsoft app registration; Microsoft asks you to allow access to your calendars."
-                            }
+                            Provider::Microsoft => "Uses AltMail's Microsoft app registration; Microsoft asks you to allow access to your calendars.",
                         })
                         .font(regular(11.5))
                         .color(t.text_dim),
@@ -2376,7 +2374,7 @@ impl MailApp {
         if provider.is_none() {
             ui.horizontal(|ui| {
                 ui.add_space(154.0);
-                ui.checkbox(&mut f.server_sends_invites, "This calendar server emails meeting invitations itself (MailCraft then doesn't)");
+                ui.checkbox(&mut f.server_sends_invites, "This calendar server emails meeting invitations itself (AltMail then doesn't)");
             });
             ui.horizontal(|ui| {
                 ui.add_space(154.0);

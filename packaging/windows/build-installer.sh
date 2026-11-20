@@ -1,5 +1,5 @@
 #!/bin/bash
-# Packages an already-built MailCraft.exe as the MailCraft.exe installer (an MSI inside a WiX
+# Packages an already-built mailcraft.exe as the AltMail.exe installer (AltMail was MailCraft) (an MSI inside a WiX
 # Burn bundle).
 #
 #   packaging/windows/build-installer.sh <dir holding mailcraft.exe and WebView2Loader.dll> [out dir]
@@ -29,14 +29,14 @@ SCP="scp -q -i $WIX_KEY -o StrictHostKeyChecking=no"
 
 T=$(mktemp -d)
 trap 'rm -rf "$T"' EXIT
-cp "$BIN/mailcraft.exe" "$T/MailCraft.exe"
+cp "$BIN/mailcraft.exe" "$T/AltMail.exe"
 cp "$BIN/WebView2Loader.dll" assets/app-icon/mailcraft.ico assets/app-icon/mailcraft-256.png \
    LICENSE-MIT LICENSE-APACHE NOTICE packaging/windows/mailcraft.wxs packaging/windows/bundle.wxs \
    packaging/windows/wixbuild.ps1 "$T/"
 # The licence page of the installer: LICENSE-MIT as plain RTF.
 {
   printf '{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Segoe UI;}}\\f0\\fs18 '
-  printf 'MailCraft is free software, licensed under either the MIT licence or the Apache License 2.0, at your option. Both are installed beside the program.\\par\\par '
+  printf 'AltMail is free software, licensed under either the MIT licence or the Apache License 2.0, at your option. Both are installed beside the program.\\par\\par '
   sed -e 's/\\/\\\\/g; s/{/\\{/g; s/}/\\}/g; s/$/\\par/' LICENSE-MIT
   printf '}'
 } > "$T/notice.rtf"
@@ -45,5 +45,5 @@ $SSH "powershell -NoProfile -Command \"Remove-Item C:\mailcraftbuild -Recurse -F
 $SCP "$T"/* "$WIX_USER@$WIX_HOST:C:/mailcraftbuild/"
 $SSH "powershell -NoProfile -ExecutionPolicy Bypass -File C:\\mailcraftbuild\\wixbuild.ps1 -Version $VERSION"
 mkdir -p "$OUT"
-$SCP "$WIX_USER@$WIX_HOST:C:/mailcraftbuild/MailCraft.exe" "$OUT/MailCraft.exe"
-( cd "$OUT" && sha256sum MailCraft.exe | tee MailCraft.exe.sha256 )
+$SCP "$WIX_USER@$WIX_HOST:C:/mailcraftbuild/AltMail.exe" "$OUT/AltMail.exe"
+( cd "$OUT" && sha256sum AltMail.exe | tee AltMail.exe.sha256 )

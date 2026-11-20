@@ -35,7 +35,7 @@ pub fn set(email: &str, password: &str) -> &'static str {
             return "Windows Credential Manager";
         }
     }
-    "memory (until MailCraft closes)"
+    "memory (until AltMail closes)"
 }
 
 #[cfg(windows)]
@@ -47,6 +47,7 @@ const PARTS: &str = "mailcraft-parts:";
 fn read(email: &str) -> Option<String> {
     // No saved sign-in is ordinary; one Windows would not hand over is worth knowing about,
     // because the timed check for mail then skips the account without a word.
+    // Credential Manager entries keep the name "MailCraft" (AltMail's old name): renaming them would lose every saved password.
     let head = match keyring::Entry::new("MailCraft", email).and_then(|e| e.get_password()) {
         Ok(h) => h,
         Err(keyring::Error::NoEntry) => return None,
